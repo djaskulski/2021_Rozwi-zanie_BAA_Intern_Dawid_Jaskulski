@@ -18,6 +18,8 @@ Table of Contents
 * API: https://api.covid19api.com/
 * Dokumentacja: https://documenter.getpostman.com/view/10808728/SzS8rjbc#intro
 
+
+# Źródło: https://api.covid19api.com/countries
 #### PROBLEM 1: Pozyskanie danych z API pozwalających na odpowiedź na zadane pytania.
 #### ROZWIĄZANIE: Wydobycie listy krajów przez konkretne zapytanie. Zautomatyzowanie jednego z zapytań do pozyskania wszystkich potrzebnych danych
 #### USPRAWNIENIE: Sprawniejsze zapoznanie się z dokumentacją API, szybsze zidentyfikowanie problemu wymagającego automatyzacji.
