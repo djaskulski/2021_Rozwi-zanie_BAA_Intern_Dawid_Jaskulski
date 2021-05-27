@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import datetime
 import json
 import time
-import requests
 from typing import Optional
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import requests
+import seaborn as sns
 
 
 def main(debug: Optional[bool] = False):
@@ -43,7 +44,7 @@ def main(debug: Optional[bool] = False):
                                      empty=empty_response_list,
                                      item="united-states")
 
-        api_data = join_countries(df1=world, list2=united_states)
+        api_data = join_countries(df1=world, df2=united_states)
 
     elif api_decision == "n":
         try:
@@ -84,7 +85,12 @@ def main(debug: Optional[bool] = False):
 
 
 def check_connection(base: str) -> None:
-    """ """
+    """
+    Checks connection to the base and prints html response status code.
+        Parameters:
+            base (str): url to the API. i.e."https://api.covid19api.com"
+        Returns: None
+    """
 
     try:
         response = requests.get(base)
@@ -94,7 +100,13 @@ def check_connection(base: str) -> None:
 
 
 def request_countries(base: str, show_response: bool = False) -> list:
-    """ """
+    """
+    Makes requests to take list of countries.
+            Parameters:
+                base (str): url to the API. i.e."https://api.covid19api.com"
+                show_response: (bool): Show HTML status code. (Default: False)
+            Returns: countries_list (list)
+    """
 
     response = requests.get(base + "/countries")
 
@@ -105,7 +117,7 @@ def request_countries(base: str, show_response: bool = False) -> list:
     countries_list = []
 
     for item in countries_json:
-        my_list = []
+        # my_list = []
         my_list = item.get('Slug')
         countries_list.append(my_list)
 
@@ -113,7 +125,12 @@ def request_countries(base: str, show_response: bool = False) -> list:
 
 
 def print_countries(c_list: list) -> None:
-    """ """
+    """
+    Prints out list of countries (with length of this list) inline with comma separator.
+            Parameters:
+                c_list (list): Countries list taken from API
+            Returns: None
+    """
 
     data = c_list
     print("Number of all countries: ", len(data))
@@ -121,7 +138,15 @@ def print_countries(c_list: list) -> None:
 
 
 def gather_countries(c_list: list, base: str, save: bool = False) -> list:
-    """time: ~ 9-15 min"""
+    """
+    Gathers [Country, Confirmed, Deaths, Recovered, Active, Date] from API requests and builds DataFrame. Also makes
+    lists of countries with successful response and not successful response.
+            Parameters:
+                c_list (list): Countries list taken from API
+                base (str): url to the API. i.e."https://api.covid19api.com"
+                save (bool): Saves DataFrame to csv file in /data directory. (Default: False)
+            Returns: [countries_with_empty_response, countries_with_response, countries_df] (list)
+    """
 
     data = c_list
     countries_with_empty_response = []
@@ -160,7 +185,13 @@ def gather_countries(c_list: list, base: str, save: bool = False) -> list:
 
 
 def make_period(from_data: list, to_date: list) -> list:
-    """ """
+    """
+    Creates two lists with dates differing by a day.
+        Parameters:
+            from_data (list): [yyyy, m, d] format is necessary. e.g. from_data=[2020, 4, 1],
+            to_date (list): [yyyy, m, d] format is necessary. e.g. to_date=[2021, 3, 30].
+        Returns: dates_list (list)
+    """
 
     start_date = datetime.date(from_data[0], from_data[1], from_data[2])
     end_date = datetime.date(to_date[0], to_date[1], to_date[2])
@@ -175,8 +206,17 @@ def make_period(from_data: list, to_date: list) -> list:
     return dates_list
 
 
-def gather_day_by_day(periods_1: list, periods_2: list, base: str, save: bool = False) -> list:
-    """time: ~ 27-30 min"""
+def gather_day_by_day(periods_1: list, periods_2: list, base: str, save: bool = False) -> pd.DataFrame:
+    """
+    Gathers [Country, Confirmed, Deaths, Recovered, Active, Date] from API requests and builds DataFrame.
+    Only for united-states.
+            Parameters:
+                periods_1 (list): List of dates in yyyy-m-d format. Should be == len (periods_2).
+                periods_2 (list): List of dates in yyyy-m-d format. Should be == len (periods_1).
+                base (str): url to the API. i.e."https://api.covid19api.com"
+                save (bool): Saves DataFrame to csv file in /data directory. (Default: False)
+            Returns: country_usa_df (pd.DataFrame)
+    """
 
     usa_data_list = []
 
@@ -206,7 +246,14 @@ def gather_day_by_day(periods_1: list, periods_2: list, base: str, save: bool = 
 
 
 def update_to_non_empty_response(non_empty: list, empty: list, item: str = "united-states") -> list:
-    """ """
+    """
+    Takes non-empty and empty lists, append non empty, and remove element from empty with item.
+            Parameters:
+                non_empty (list): List of countries with correct response.
+                empty (list): List of countries with no response.
+                item (str): Name of country from API's slug. (Default: "united-states").
+            Returns: [non_empty, empty] (list)
+    """
 
     non_empty.append(item)
     print("Number of countries with data: ", len(non_empty))
@@ -219,10 +266,16 @@ def update_to_non_empty_response(non_empty: list, empty: list, item: str = "unit
     return [non_empty, empty]
 
 
-def join_countries(df1: pd.DataFrame, list2: list) -> pd.DataFrame:
-    """ """
+def join_countries(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
+    """
+     Joins two DataFrames. Saves it to csv file in /data directory.
+        Parameters:
+            df1 (pd.DataFrame): DataFrame with all countries with correct response.
+            df2 (pd.DataFrame):  DataFrame united-states data.
+        Returns: countries_and_usa_df (pd.DataFrame)
+    """
 
-    countries_and_usa_df = df1.append(list2)
+    countries_and_usa_df = df1.append(df2)
     countries_and_usa_df.to_csv('data/world_and_usa_df.csv', index=False)
     print("Finished dataframe:\n", countries_and_usa_df)
 
@@ -230,7 +283,12 @@ def join_countries(df1: pd.DataFrame, list2: list) -> pd.DataFrame:
 
 
 def load_csv_skip_api(path: str = "data/world_and_usa_df.csv") -> pd.DataFrame:
-    """save 20 minutes of your life, skip api, load csv"""
+    """
+    Save 20 minutes of your life, skip api, load csv.
+        Parameters:
+            path (str): Absolute path to folder with csv file. (Default: "data/world_and_usa_df.csv")
+        Returns: data (pd.DataFrame)
+    """
 
     data = pd.read_csv(path)
     print("Data successfully loaded to 'api_data' variable!")
@@ -239,7 +297,15 @@ def load_csv_skip_api(path: str = "data/world_and_usa_df.csv") -> pd.DataFrame:
 
 
 def mask_date(data: pd.DataFrame, date_from: str, date_to: str, category: Optional[str] = None) -> pd.DataFrame:
-    """ """
+    """
+    Masks data with timeframe. Optional for indicated category.
+            Parameters:
+                data (pd.DataFrame): Data to manipulate.
+                date_from (str): Date in yyyy-m-d format. e.g. date_from="2021-3-1"
+                date_to (str): Date in yyyy-m-d format. e.g. date_to="2021-3-31"
+                category (str): OPTIONAL. Column with category: "Recovered", "Confirmed", "Deaths", "Active".
+            Returns: masked_df (pd.DataFrame)
+    """
 
     if category:
         masked_df = data[['Country', category, 'Date']]
@@ -258,7 +324,15 @@ def mask_date(data: pd.DataFrame, date_from: str, date_to: str, category: Option
 
 
 def count_absolute_difference(data: pd.DataFrame, category: str, row_limit: int) -> pd.DataFrame:
-    """ """
+    """
+    Assigns value as absolute difference of second row for category minus first row for test.
+    (Test is a copy of category column).
+            Parameters:
+                data (pd.DataFrame): Data to manipulate.
+                category (str): Column with category: "Recovered", "Confirmed", "Deaths", "Active".
+                row_limit (int): Length of used DataFrame. e.g.: 5889 or 2279
+            Returns: absolute_df (pd.DataFrame)
+    """
 
     absolute_df = data[['Country', 'Date', category]].groupby(['Country', 'Date']).sum()
     absolute_df.reset_index(inplace=True)
@@ -268,7 +342,6 @@ def count_absolute_difference(data: pd.DataFrame, category: str, row_limit: int)
     # absolute_df
 
     # 1 month limit means records for 1 country from last month
-
     month_limit = 30
     df_limit = row_limit
     index_counter = 0
@@ -292,7 +365,13 @@ def count_absolute_difference(data: pd.DataFrame, category: str, row_limit: int)
 
 
 def group_sum_sort(data: pd.DataFrame, category: str) -> pd.DataFrame:
-    """ """
+    """
+    Slices data to Country, {category}_increment and Date. Groups by Country, sum and sort descending by 10.
+            Parameters:
+                data (pd.DataFrame): Data to manipulate.
+                category (str): Column with category: "Recovered", "Confirmed", "Deaths", "Active".
+            Returns: group_sum_sort_df (pd.DataFrame)
+    """
 
     group_sum_sort_df = data[['Country', f'{category}_increment', 'Date']]
 
@@ -303,7 +382,13 @@ def group_sum_sort(data: pd.DataFrame, category: str) -> pd.DataFrame:
 
 
 def plot_category(data: pd.DataFrame, category: str) -> plt:
-    """ """
+    """
+    Plots bar plot with dates on x-axis, and {category}_increment on y-axis.
+            Parameters:
+                data (pd.DataFrame): Data to plot.
+                category (str): Column with category: "Recovered", "Confirmed", "Deaths", "Active".
+            Returns: plot (plt)
+    """
 
     plt.figure(figsize=(10, 7))
     sns.barplot(x=data.index, y=f'{category}_increment', data=data)
@@ -317,7 +402,13 @@ def plot_category(data: pd.DataFrame, category: str) -> plt:
 
 
 def choose_country(data: pd.DataFrame, country: str) -> pd.DataFrame:
-    """ """
+    """
+    Slices DataFrame to only one chosen country.
+            Parameters:
+                data (pd.DataFrame): Data to manipulate.
+                country (str): Name of country from API's slug. e.g. "Poland"
+            Returns: country_df (pd.DataFrame)
+    """
 
     country_df = data.loc[data["Country"] == country]
     country_df.reset_index(drop=True, inplace=True)
@@ -326,7 +417,12 @@ def choose_country(data: pd.DataFrame, country: str) -> pd.DataFrame:
 
 
 def outlier_for_active_category(data: pd.DataFrame) -> pd.DataFrame:
-    """ """
+    """
+    Locate outliers above 1e6 and recalculate it.
+            Parameters:
+                data (pd.DataFrame): Data to manipulate.
+            Returns: data (pd.DataFrame)
+    """
     try:
         idx = data.index[data['Active'] > 1e6].tolist()
         data.iloc[idx[0], 4] = data.iloc[idx[0], 1] - data.iloc[idx[0], 2] - data.iloc[idx[0], 3]
@@ -337,7 +433,14 @@ def outlier_for_active_category(data: pd.DataFrame) -> pd.DataFrame:
 
 
 def plot_categories(data: pd.DataFrame, x_ticks: bool = False, y_ticks: bool = False) -> plt:
-    """ """
+    """
+    Plots four subplots (line plots) with dates on x-axis, and four categories on y-axis
+            Parameters:
+                data (pd.DataFrame): Data to plot.
+                x_ticks (bool): Rotation on x axis (90 degrees) and more dates. (Default: False)
+                y_ticks (bool): Y-axis range ticks. (Default: False)
+            Returns: plot (plt)
+    """
 
     fig, axes = plt.subplots(4, 1, figsize=(12, 9), sharex="all")
 
@@ -373,7 +476,13 @@ def plot_categories(data: pd.DataFrame, x_ticks: bool = False, y_ticks: bool = F
 
 
 def strip_date(data: pd.DataFrame, category: Optional[str] = None) -> pd.DataFrame:
-    """ """
+    """
+    Strip DataFrame's dates to yyyy-mm format.
+            Parameters:
+                data (pd.DataFrame): Data to manipulate.
+                category (str): Column with category: "Recovered", "Confirmed", "Deaths", "Active".
+            Returns: data (pd.DataFrame)
+    """
 
     if category:
         stripped_df = data[['Country', category, 'Date']]
@@ -386,7 +495,13 @@ def strip_date(data: pd.DataFrame, category: Optional[str] = None) -> pd.DataFra
 
 
 def group_sum_sort2(data: pd.DataFrame, category: str) -> pd.DataFrame:
-    """ """
+    """
+    Slices data to Country, {category}, {category}_increment and Date. Groups by Date, sum and sort ascending.
+            Parameters:
+                data (pd.DataFrame): Data to manipulate.
+                category (str): Column with category: "Recovered", "Confirmed", "Deaths", "Active".
+            Returns: group_sum_sort_df (pd.DataFrame)
+    """
 
     group_sort_df = data[['Country', category, f'{category}_increment', 'Date']]
     group_sort_df.loc[group_sort_df[f'{category}_increment'] < 0, f'{category}_increment'] = 0
@@ -397,7 +512,14 @@ def group_sum_sort2(data: pd.DataFrame, category: str) -> pd.DataFrame:
 
 
 def category_increment_plot(data: pd.DataFrame, category: str, x_ticks: bool = False) -> plt:
-    """ """
+    """
+    Plots two line plot with dates on x-axis, and {category}, {category}_increment on y-axis.
+            Parameters:
+                data (pd.DataFrame): Data to plot.
+                category (str): Column with category: "Recovered", "Confirmed", "Deaths", "Active".
+                x_ticks (bool): Rotation on x axis (45 degrees). (Default: False)
+            Returns: plot (plt)
+    """
 
     fig, axes = plt.subplots(2, 1, figsize=(12, 10), sharex="all")
 
