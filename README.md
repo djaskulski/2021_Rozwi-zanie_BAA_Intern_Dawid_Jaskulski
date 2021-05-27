@@ -1,67 +1,44 @@
-# Raport covidowy dla Allegro SUMMER E-XPERIENCE
-## Rekrutacja: Intern - Business Application Administrator
+# Covid report for Allegro SUMMER E-XPERIENCE
+## Recruitment: Intern - Business Application Administrator
+### Jaskulski Dawid
 
 Table of Contents
 
-    * Przygotowanie danych
-        * Lista wszystkich państw
-        * Lista państw z danymi
-        * Lista państw bez danych
-        * Tabela danych dla wskazanych państw
+    * Data preparation
+        * List of all countries
+        * List of countries with data
+        * List of countries without data
+        * Data table for indicated countries
 
-    * TOP 10 państw z największą liczbą wyzdrowień ...
-    * TOP 10 państw z największą liczbą potwierdzonych nowych przypadków ...
-    * TOP 10 państw z największą liczbą przypadków śmiertelnych ...
-    * Statystyki ... dla Polski za ostatni miesiąc
-    * Miesięczny przyrost wyzdrowień w ostatnim miesiącu
+    * TOP 10 countries with the highest number of recoveries in the last month
+    * TOP 10 countries with the highest number of confirmed new cases in the last month
+    * TOP 10 states with the highest number of deaths in the last month
+    * Statistics for Poland for the last month
+    * Monthly growth in recoveries over the past year for the entire world
 
 * API: https://api.covid19api.com/
-* Dokumentacja: https://documenter.getpostman.com/view/10808728/SzS8rjbc#intro
+* Documentation: https://documenter.getpostman.com/view/10808728/SzS8rjbc#intro
 
+#### PROBLEM 1: Obtain data from the API to answer the questions posed.
+#### SOLUTION: Extract a list of countries through a specific query. Automate one of the queries to extract all the data needed.
 
-# Źródło: https://api.covid19api.com/countries
-#### PROBLEM 1: Pozyskanie danych z API pozwalających na odpowiedź na zadane pytania.
-#### ROZWIĄZANIE: Wydobycie listy krajów przez konkretne zapytanie. Zautomatyzowanie jednego z zapytań do pozyskania wszystkich potrzebnych danych
-#### USPRAWNIENIE: Sprawniejsze zapoznanie się z dokumentacją API, szybsze zidentyfikowanie problemu wymagającego automatyzacji.
+#### PROBLEM 2: Notification of string variable assignment.
+#### SOLUTION: Mute notifications: pd.set_option('mode.chained_assignment', None)
 
-#### PROBLEM 2: Powiadomienie o łańcuchowym przypisywaniu zmiennych
-#### ROZWIĄZANIE: Wyciszenie powiadomień: pd.set_option('mode.chained_assignment', None)
-#### USPRAWNIENIE: Dla poprawienia czystości kodu zastosowałbym metodę: .copy(), (.deepcopy() - dla list)
+#### PROBLEM 3: API does not respond to all requests correctly. Information about exceeding the limit for a free user.
+#### SOLUTION: Reduce the frequency of queries using the time module and the sleep method.
 
-#### PROBLEM 3: API nie odpowiada na wszystkie requesty w prawidłowy sposób. Informacja o przekroczeniu limitu dla darmowego użytkownika.
-#### ROZWIĄZANIE: Zmniejszenie częstotliwości zapytań dzieki modułowi time i metodzie sleep.
-#### USPRAWNIENIE: ? 
+#### PROBLEM 4: Excessively long code runtime when debugging manually.
+#### SOLUTION: Skip the loop with API queries by writing and loading data directly to and from a csv file.
 
-#### PROBLEM 4: Zbyt długi czas uruchomienia kodu przy ręcznym debuggowaniu
-#### ROZWIĄZANIE: Obejście pętli polegającej na module requests i odpowiedziach API, przez zapis i wczytanie danych bezprośrednio do i z pliku csv
-#### USPRAWNIENIE: Podzielenie kodu na moduły by zwiekszyć niezależność między częściami kodu. 
+#### PROBLEM 5: The API returns an error about the time interval being too long for the US query.
+#### SOLUTION: Create two lists to serve as a one-day interval for the query directed to the API. Use of parallel iteration.
 
-#### PROBLEM 5: API zwraca błąd o zbyt dlugim przedziale czasowym dla zapytania o USA.
-#### ROZWIĄZANIE: Stworzenie dwóch list służących za jednodniowy przedział dla zapytania kierowanego do API. Wykorzystanie równoległej iteracji.
-#### USPRAWNIENIE: ?
+#### PROBLEM 6: API does not return data for certain countries.
+#### SOLUTION: Probably missing data for these countries.
 
-#### PROBLEM 6: API nie zwraca danych dla pewnych państw. Prawdopodobnie brak danych dla tych krajów.
-#### ROZWIĄZANIE: Brak.
-#### USPRAWNIENIE: ?
+#### PROBLEM 7: The values in the columns are relative values. Each following day is the sum of the previous day's increment and value.
+#### SOLUTION: Obtain the absolute number of argument growth in a given month by implementing the small logic.
 
-#### PROBLEM 7: Wartości w kolumnach są wartościami względnymi. Każdy następny dzień jest sumą wartości przyrostu i wartości dnia poprzedniego.
-#### ROZWIĄZANIE: Uzyskanie bezwzględnej liczby wzrostu argumentu w danym miesiącu przez implementację poniższej logiki.
-#### USPRAWNIENIE: ?
-
-#### PROBLEM 8: Wartość odstająca w jednym z rekordów
-#### ROZWIĄZANIE: Ręczne przeliczenie na podstawie innych kolumn
-#### USPRAWNIENIE: W przypadku innego typu outlier'a można zastosować inne sposoby wyznaczenia wartości
-
-#### PROBLEM 9: Wyeksportowanie jupyternotebooka do pdf
-#### ROZWIĄZANIE: Użycie LaTeX'a
-#### USPRAWNIENIE: Bardziej czysty export do pdf (bez kodu, pustych stron, tabel podzielonych na dwie stony)
-
-# USPRAWNIENIA OGÓLNE:
-    # Obudowanie kodu w funkcje
-    # Rozdzielenie funkcji na moduły rozwiązujące pomniejsze problemy
-    # Zastosowanie modułu 'logging' do śledzenia działania kodu
-    # Zastosowanie modułu 'pdb' do debugowania kodu 
-    # Zastosowanie modułu 'unittest' do jednostkowego testowania kodu
-    # Zaimportowanie modułów i dokończenie raportu w Jupyter Lab'ie
-    # Zbudowanie responsywnego spisu treści
-    # Komentarze i wnioski do każdego wykresu
+#### PROBLEM 8: Outlier in one of the records.
+#### SOLUTION: Manual recalculation based on other columns.
