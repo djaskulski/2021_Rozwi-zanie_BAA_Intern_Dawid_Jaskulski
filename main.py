@@ -84,6 +84,8 @@ def main(debug: Optional[bool] = False):
 
 
 def check_connection(base: str) -> None:
+    """ """
+
     try:
         response = requests.get(base)
         print(response, "Connection is fine!\n")
