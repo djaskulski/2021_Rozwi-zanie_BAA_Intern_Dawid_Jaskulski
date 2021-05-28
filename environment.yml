@@ -1,0 +1,11 @@
+name: allegro_baa
+channels:
+ - conda-forge
+ - defaults
+dependencies:
+ - python == 3.8.5
+ - numpy 
+ - pandas
+ - seaborn
+ - matplotlib
+ - pip
