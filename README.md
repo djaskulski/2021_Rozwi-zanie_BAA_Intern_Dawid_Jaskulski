@@ -19,19 +19,19 @@ Table of Contents
 * API: https://api.covid19api.com/
 * Documentation: https://documenter.getpostman.com/view/10808728/SzS8rjbc#intro
 
-#### PROBLEM 1: Obtain data from the API to answer the questions posed.
+### PROBLEM 1: Obtain data from the API to answer the questions posed.
 #### SOLUTION: Extract a list of countries through a specific query. Automate one of the queries to extract all the data needed.
 
-#### PROBLEM 2: Notification of string variable assignment.
+### PROBLEM 2: Notification of string variable assignment.
 #### SOLUTION: Mute notifications: pd.set_option('mode.chained_assignment', None)
 
-#### PROBLEM 3: API does not respond to all requests correctly. Information about exceeding the limit for a free user.
+### PROBLEM 3: API does not respond to all requests correctly. Information about exceeding the limit for a free user.
 #### SOLUTION: Reduce the frequency of queries using the time module and the sleep method.
 
-#### PROBLEM 4: Excessively long code runtime when debugging manually.
+### PROBLEM 4: Excessively long code runtime when debugging manually.
 #### SOLUTION: Skip the loop with API queries by writing and loading data directly to and from a csv file.
 
-#### PROBLEM 5: The API returns an error about the time interval being too long for the US query.
+### PROBLEM 5: The API returns an error about the time interval being too long for the US query.
 #### SOLUTION: Create two lists to serve as a one-day interval for the query directed to the API. Use of parallel iteration.
 
 #### PROBLEM 6: API does not return data for certain countries.
