@@ -34,11 +34,11 @@ Table of Contents
 ### PROBLEM 5: The API returns an error about the time interval being too long for the US query.
 #### SOLUTION: Create two lists to serve as a one-day interval for the query directed to the API. Use of parallel iteration.
 
-#### PROBLEM 6: API does not return data for certain countries.
+### PROBLEM 6: API does not return data for certain countries.
 #### SOLUTION: Probably missing data for these countries.
 
-#### PROBLEM 7: The values in the columns are relative values. Each following day is the sum of the previous day's increment and value.
+### PROBLEM 7: The values in the columns are relative values. Each following day is the sum of the previous day's increment and value.
 #### SOLUTION: Obtain the absolute number of argument growth in a given month by implementing the small logic.
 
-#### PROBLEM 8: Outlier in one of the records.
+### PROBLEM 8: Outlier in one of the records.
 #### SOLUTION: Manual recalculation based on other columns.
